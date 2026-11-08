@@ -176,3 +176,9 @@ Body:
 Посмотрите видео «Lombok & Lambda» в уроке «Основы автоматизации».
 
 </details>
+
+
+---
+
+### Статус сборки (CI)
+[![Java CI with Gradle](https://github.com/stepanovdvhis/qamid-138_patterns/actions/workflows/ci.yml/badge.svg)](https://github.com/stepanovdvhis/qamid-138_patterns/actions/workflows/ci.yml)
