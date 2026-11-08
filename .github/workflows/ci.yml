@@ -22,15 +22,13 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Install Firefox
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y firefox
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
 
       - name: Start SUT (Application)
         run: |
           java -jar artifacts/app-replan-delivery.jar &
-          sleep 20
+          sleep 15
 
       - name: Run Tests
-        run: ./gradlew test -Dselenide.headless=true -Dselenide.browser=firefox
+        run: ./gradlew test -Dselenide.headless=true -Dselenide.browser=chrome
