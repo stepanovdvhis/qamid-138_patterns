@@ -15,7 +15,7 @@ java {
 }
 
 dependencies {
-    testImplementation 'com.codeborne:selenide:7.3.0'
+    testImplementation 'com.codeborne:selenide:6.19.1'
     testImplementation 'com.github.javafaker:javafaker:1.0.2'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testImplementation 'org.projectlombok:lombok:1.18.32'
@@ -24,4 +24,13 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    systemProperty 'file.encoding', 'UTF-8'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs('-Dfile.encoding=UTF-8')
 }
