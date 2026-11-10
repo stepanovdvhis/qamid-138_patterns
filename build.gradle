@@ -24,7 +24,8 @@ dependencies {
 
 test {
     useJUnitPlatform()
-    systemProperty 'file.encoding', 'UTF-8'
+    // Добавлено согласно замечанию преподавателя
+    systemProperty 'selenide.headless', System.getProperty('selenide.headless')
 }
 
 tasks.withType(JavaCompile).configureEach {
