@@ -4,6 +4,8 @@ import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.ClickOptions;
 import data.DeliveryData;
 
+import java.time.Duration;
+
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Condition.visible;
 
@@ -16,14 +18,14 @@ public class DeliveryPage {
     private SelenideElement submitButton = $("button.button_view_extra");
 
     public DeliveryPage fillForm(DeliveryData data) {
-        cityField.shouldBe(visible).setValue(data.getCity());
-        dateField.shouldBe(visible).setValue(data.getDate());
-        nameField.shouldBe(visible).setValue(data.getName());
-        phoneField.shouldBe(visible).setValue(data.getPhone());
+        // Указываем таймаут в ассертах
+        cityField.shouldBe(visible, Duration.ofSeconds(10)).setValue(data.getCity());
+        dateField.shouldBe(visible, Duration.ofSeconds(10)).setValue(data.getDate());
+        nameField.shouldBe(visible, Duration.ofSeconds(10)).setValue(data.getName());
+        phoneField.shouldBe(visible, Duration.ofSeconds(10)).setValue(data.getPhone());
 
-        // Клик с использованием JavaScript, чтобы обойти перекрытия (выпадающие списки)
         agreementCheckbox.click(ClickOptions.usingJavaScript());
-        submitButton.shouldBe(visible).click(ClickOptions.usingJavaScript());
+        submitButton.shouldBe(visible, Duration.ofSeconds(10)).click(ClickOptions.usingJavaScript());
 
         return this;
     }

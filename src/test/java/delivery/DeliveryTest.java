@@ -6,6 +6,7 @@ import page.DeliveryPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -16,44 +17,50 @@ public class DeliveryTest {
 
     @BeforeEach
     void setUp() {
+        // Убрали настройки (headless, timeout, browserSize), как просил преподаватель
         Configuration.browser = "firefox";
-        Configuration.headless = true;
-        Configuration.timeout = 10000;
-        Configuration.browserSize = "1920x1080";
         open("http://localhost:9999");
     }
 
     @Test
     void shouldReplanDelivery() {
-        // 1. Генерируем данные
         DeliveryData data = DataGenerator.generateData();
         DeliveryPage page = new DeliveryPage();
 
-        // 2. Заполняем форму первый раз
+        // 1. Первое планирование
         page.fillForm(data);
 
-        // 3. Проверяем уведомление об успешном планировании
-        $("[data-test-id='success-notification']").shouldBe(visible);
+        // Проверяем уведомление об успехе и наличие даты в тексте
+        $("[data-test-id='success-notification']")
+                .shouldBe(visible, Duration.ofSeconds(10))
+                .shouldHave(text("Успешно"))
+                .shouldHave(text(data.getDate())); // Проверяем, что дата есть в сообщении
 
-        // 4. Открываем форму снова
+        // 2. Перепланирование
         open("http://localhost:9999");
 
-        // 5. Генерируем новую дату (на 5 дней позже)
+        // Генерируем новую дату
         LocalDate newDate = LocalDate.now().plusDays(5);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         String newDateStr = newDate.format(formatter);
 
-        // 6. Заполняем форму повторно с новой датой
         DeliveryData replanData = new DeliveryData(data.getCity(), data.getName(), data.getPhone(), newDateStr);
         page.fillForm(replanData);
 
-        // 7. Проверяем, что появилось уведомление о перепланировании
-        $("[data-test-id='replan-notification']").shouldBe(visible);
+        // Проверяем уведомление о перепланировании
+        $("[data-test-id='replan-notification']")
+                .shouldBe(visible, Duration.ofSeconds(10))
+                .shouldHave(text("Перепланировать"));
 
-        // 8. Нажимаем кнопку "Перепланировать" внутри уведомления
-        $("[data-test-id='replan-notification'] button").shouldBe(visible).click();
+        // Нажимаем кнопку
+        $("[data-test-id='replan-notification'] button")
+                .shouldBe(visible, Duration.ofSeconds(10))
+                .click();
 
-        // 9. Проверяем уведомление об успешном перепланировании
-        $("[data-test-id='success-notification']").shouldBe(visible);
+        // Проверяем успех и наличие новой даты
+        $("[data-test-id='success-notification']")
+                .shouldBe(visible, Duration.ofSeconds(10))
+                .shouldHave(text("Успешно"))
+                .shouldHave(text(newDateStr)); // Проверяем новую дату
     }
 }
