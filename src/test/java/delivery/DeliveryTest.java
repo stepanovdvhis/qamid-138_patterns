@@ -17,7 +17,6 @@ public class DeliveryTest {
 
     @BeforeEach
     void setUp() {
-        // Убрали настройки (headless, timeout, browserSize), как просил преподаватель
         Configuration.browser = "firefox";
         open("http://localhost:9999");
     }
@@ -30,16 +29,14 @@ public class DeliveryTest {
         // 1. Первое планирование
         page.fillForm(data);
 
-        // Проверяем уведомление об успехе и наличие даты в тексте
+        // Проверяем ПОЛНОЕ сообщение с датой
         $("[data-test-id='success-notification']")
                 .shouldBe(visible, Duration.ofSeconds(10))
-                .shouldHave(text("Успешно"))
-                .shouldHave(text(data.getDate())); // Проверяем, что дата есть в сообщении
+                .shouldHave(text("Успешно! Встреча успешно запланирована на " + data.getDate()));
 
         // 2. Перепланирование
         open("http://localhost:9999");
 
-        // Генерируем новую дату
         LocalDate newDate = LocalDate.now().plusDays(5);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         String newDateStr = newDate.format(formatter);
@@ -47,20 +44,16 @@ public class DeliveryTest {
         DeliveryData replanData = new DeliveryData(data.getCity(), data.getName(), data.getPhone(), newDateStr);
         page.fillForm(replanData);
 
-        // Проверяем уведомление о перепланировании
         $("[data-test-id='replan-notification']")
                 .shouldBe(visible, Duration.ofSeconds(10))
                 .shouldHave(text("Перепланировать"));
 
-        // Нажимаем кнопку
         $("[data-test-id='replan-notification'] button")
                 .shouldBe(visible, Duration.ofSeconds(10))
                 .click();
 
-        // Проверяем успех и наличие новой даты
         $("[data-test-id='success-notification']")
                 .shouldBe(visible, Duration.ofSeconds(10))
-                .shouldHave(text("Успешно"))
-                .shouldHave(text(newDateStr)); // Проверяем новую дату
+                .shouldHave(text("Успешно! Встреча успешно запланирована на " + newDateStr));
     }
 }

@@ -26,4 +26,4 @@ jobs:
         run: java -jar artifacts/app-replan-delivery.jar &
 
       - name: Run Tests
-        run: ./gradlew test -Dselenide.headless=true
+        run: ./gradlew test -Dselenide.headless=true --info
