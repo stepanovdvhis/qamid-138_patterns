@@ -22,11 +22,15 @@ public class DataGenerator {
         String name = faker.name().fullName();
         String phone = faker.phoneNumber().phoneNumber();
 
-        // Генерация даты внутри метода
-        LocalDate date = LocalDate.now().plusDays(3);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String dateStr = date.format(formatter);
+        String dateStr = generateNewDate();
 
         return new DeliveryData(city, name, phone, dateStr);
+    }
+
+    // Метод для генерации новой даты (вынесен сюда по требованию преподавателя)
+    public static String generateNewDate() {
+        LocalDate date = LocalDate.now().plusDays(5);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return date.format(formatter);
     }
 }
